@@ -1,11 +1,10 @@
-import React, { use, useState } from 'react';
+import React, { useState } from 'react'; // Corrigido aqui
 import { Link, Navigate } from 'react-router-dom';
 import axios from 'axios';
 
-
 const Register = ({ setUser }) => {
 
-   const [name, setName] = useState("");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [redirect, setRedirect] = useState(false); // Corrigido aqui
@@ -13,21 +12,29 @@ const Register = ({ setUser }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    /*if (email && password) {
+    if (email && password && name) {
       try {
-        const { data: userDoc } = await axios.post('/users/login', {
+        // 🔥 Ajuste a URL para /users/
+        const { data: userDoc } = await axios.post('/users/', {
+          name,
           email,
           password,
         });
 
-        setUser(userDoc);
+        // 🔥 Evitar expor password do backend: só pegar _id, name, email
+        setUser({
+          _id: userDoc._id,
+          name: userDoc.name,
+          email: userDoc.email,
+        });
+
         setRedirect(true); // Aqui também
       } catch (error) {
-        alert(`Deu um erro ao logar: ${error.response.data}`);
+        alert(`Deu um erro ao cadastrar o usuário: ${error.response?.data?.message || error.message}`);
       }
     } else {
-      alert('Você precisa preencher o e-mail e a senha!');
-    }*/
+      alert('Você precisa preencher o e-mail, o nome e a senha!');
+    }
   };
 
   if (redirect) return <Navigate to='/' />;
@@ -65,7 +72,7 @@ const Register = ({ setUser }) => {
           </button>
         </form>
         <p>
-          Já  tem uma conta?{' '}
+          Já tem uma conta?{' '}
           <Link to='/login' className='underline font-semibold'>
             Logue aqui!
           </Link>
