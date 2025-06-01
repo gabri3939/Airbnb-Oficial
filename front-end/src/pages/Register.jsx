@@ -3,8 +3,9 @@ import { Link, Navigate } from 'react-router-dom';
 import axios from 'axios';
 
 
-const Login = ({user, setUser }) => {
+const Register = ({ setUser }) => {
 
+   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [redirect, setRedirect] = useState(false); // Corrigido aqui
@@ -12,7 +13,7 @@ const Login = ({user, setUser }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (email && password) {
+    /*if (email && password) {
       try {
         const { data: userDoc } = await axios.post('/users/login', {
           email,
@@ -26,16 +27,23 @@ const Login = ({user, setUser }) => {
       }
     } else {
       alert('Você precisa preencher o e-mail e a senha!');
-    }
+    }*/
   };
 
-  if (redirect || user) return <Navigate to='/' />;
+  if (redirect) return <Navigate to='/' />;
 
   return (
     <section className='flex items-center'>
       <div className="gap-4 flex flex-col items-center max-w-96 mx-auto w-full">
-        <h1 className='text-3xl font-bold'>Faça seu login</h1>
+        <h1 className='text-3xl font-bold'>Faça seu cadastro</h1>
         <form className='flex flex-col gap-2 w-full' onSubmit={handleSubmit}>
+          <input
+            type="text"
+            className='w-full rounded-full border border-gray-300 px-4 py-2'
+            placeholder='Digite seu nome'
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
           <input
             type="email"
             className='w-full rounded-full border border-gray-300 px-4 py-2'
@@ -53,13 +61,13 @@ const Login = ({user, setUser }) => {
           <button
             className="cursor-pointer bg-primary-400 text-white font-bold w-full rounded-full border border-gray-300 px-4 py-2"
           >
-            Login
+            Registrar
           </button>
         </form>
         <p>
-          Ainda não tem conta?{' '}
-          <Link to='/register' className='underline font-semibold'>
-            Registre-se aqui!
+          Já  tem uma conta?{' '}
+          <Link to='/login' className='underline font-semibold'>
+            Logue aqui!
           </Link>
         </p>
       </div>
@@ -67,4 +75,4 @@ const Login = ({user, setUser }) => {
   );
 };
 
-export default Login;
+export default Register;
