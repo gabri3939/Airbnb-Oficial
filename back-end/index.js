@@ -13,7 +13,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(cors({
-  origin: "http://localhost:5173",  // SEM barra no final
+  origin: "http://localhost:5175",  // SEM barra no final
   credentials: true,
 }));
 

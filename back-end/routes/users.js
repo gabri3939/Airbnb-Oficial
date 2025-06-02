@@ -13,24 +13,24 @@ router.get("/", async (req, res) => {
     const users = await User.find();
     res.json(users);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ error: error.message });
   }
 });
 
-router.get("/profile", async (req, res) => {
+router.get("/profile", (req, res) => {
   const { token } = req.cookies;
 
   if (token) {
-    try {
-      const userInfo = jwt.verify(token, JWT_SECRET_KEY);
+    jwt.verify(token, JWT_SECRET_KEY, {}, (error, userInfo) => {
+      if (error) {
+        return res.status(401).json({ error: "Token inválido", details: error.message });
+      }
       res.json(userInfo);
-    } catch (error) {
-      res.status(500).json(error);
-    }
+    });
   } else {
     res.json(null);
   }
-}); 
+});
 
 router.post("/", async (req, res) => {
   const { name, email, password } = req.body;
@@ -43,22 +43,23 @@ router.post("/", async (req, res) => {
       password: encryptedPassword,
     });
 
-    const newUser = { _id: createdUser._id, name: createdUser.name, email: createdUser.email }; // Criei corretamente a variável
+    const newUser = { _id: createdUser._id, name: createdUser.name, email: createdUser.email };
 
-    const token = jwt.sign(newUser, JWT_SECRET_KEY);
+    jwt.sign(newUser, JWT_SECRET_KEY, {}, (error, token) => {
+      if (error) {
+        console.error("Erro ao gerar token:", error);
+        return res.status(500).json({ error: "Erro ao gerar token", details: error.message });
+      }
 
-    console.log({ token, JWT_SECRET_KEY });
-
-    // Define cookie e envia resposta JSON
-    res.cookie('token', token, {
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: false, // se for https, colocar true
-      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 dias
-    }).json(newUser); // Envia somente uma resposta, sem duplicar
-
+      res.cookie('token', token, {
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: false, // 🔐 Em produção, use: secure: true
+        maxAge: 1000 * 60 * 60 * 24 * 7,
+      }).json(newUser);
+    });
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -74,26 +75,28 @@ router.post("/login", async (req, res) => {
       if (passwordCorrect) {
         const { name, _id } = userDoc;
         const newUserObj = { name, email, _id };
-        const token = jwt.sign(newUserObj, JWT_SECRET_KEY);
 
-        console.log({ token, JWT_SECRET_KEY });
+        jwt.sign(newUserObj, JWT_SECRET_KEY, {}, (error, token) => {
+          if (error) {
+            console.error("Erro ao gerar token:", error);
+            return res.status(500).json({ error: "Erro ao gerar token", details: error.message });
+          }
 
-        // Define cookie e envia resposta JSON
-        res.cookie('token', token, {
-          httpOnly: true,
-          sameSite: 'lax',
-          secure: false, // se for https, colocar true
-          maxAge: 1000 * 60 * 60 * 24 * 7, // 7 dias
-        }).json(newUserObj);
-
+          res.cookie('token', token, {
+            httpOnly: true,
+            sameSite: 'lax',
+            secure: false, // 🔐 Em produção, use: secure: true
+            maxAge: 1000 * 60 * 60 * 24 * 7,
+          }).json(newUserObj);
+        });
       } else {
-        res.status(404).json("Senha inválida!");
+        res.status(401).json({ error: "Senha inválida!" });
       }
     } else {
-      res.status(400).json("Usuário não encontrado!");
+      res.status(404).json({ error: "Usuário não encontrado!" });
     }
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ error: error.message });
   }
 });
 
