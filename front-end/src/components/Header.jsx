@@ -32,7 +32,7 @@ const Header = ({user}) => {
         </Link>
 
         {/* Perfil à direita */}
-        <Link to={user ? "/account" : '/login'}>
+        <Link to={user ? "/account/profile" : '/login'}>
           <div className=' flex items-center space-x-2 border border-gray-300 rounded-full px-4 py-2 shadow-md'>
             {/* Ícone do menu */}
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6 text-gray-600">

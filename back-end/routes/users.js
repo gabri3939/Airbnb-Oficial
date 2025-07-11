@@ -3,11 +3,16 @@ import User from "../domains/users/model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
+import { JWTSign, JWTVerify } from "../utils/jwt.js";  // <-- IMPORTAÇÃO CORRETA
 
 const router = express.Router();
 const bcryptSalt = bcrypt.genSaltSync();
 const { JWT_SECRET_KEY } = process.env;
 
+// restante do código continua igual
+
+
+// GET todos os usuários
 router.get("/", async (req, res) => {
   try {
     const users = await User.find();
@@ -17,52 +22,77 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/profile", (req, res) => {
-  const { token } = req.cookies;
-
-  if (token) {
-    jwt.verify(token, JWT_SECRET_KEY, {}, (error, userInfo) => {
-      if (error) {
-        return res.status(401).json({ error: "Token inválido", details: error.message });
-      }
-      res.json(userInfo);
-    });
-  } else {
-    res.json(null);
+// GET /profile
+router.get("/profile", async (req, res) => {
+  try {
+    const userInfo = await JWTVerify(req);
+    if (!userInfo) {
+      return res.status(401).json({ error: "Token não encontrado" });
+    }
+    res.json(userInfo);
+  } catch (error) {
+    res.status(401).json({ error: "Token inválido ou expirado." });
   }
 });
 
+// ✅ POST /logout
+router.post("/logout", (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    sameSite: "none",
+    secure: false, // em produção: true
+    path: "/",
+  });
+  res.json({ message: "Logout realizado com sucesso." });
+});
+
+
+
+
+
+
+
+
+// ✅ POST / → CADASTRAR USUÁRIO
 router.post("/", async (req, res) => {
+  console.log("Requisição recebida no POST /");
   const { name, email, password } = req.body;
+
+  if (!name || !email || !password) {
+    return res.status(400).json({ error: "Nome, email e senha são obrigatórios" });
+  }
+
   const encryptedPassword = bcrypt.hashSync(password, bcryptSalt);
 
   try {
+    // ✅ Criar usuário
     const createdUser = await User.create({
       name,
       email,
       password: encryptedPassword,
     });
 
-    const newUser = { _id: createdUser._id, name: createdUser.name, email: createdUser.email };
+    const newUserObj = {
+      _id: createdUser._id,
+      name: createdUser.name,
+      email: createdUser.email,
+    };
 
-    jwt.sign(newUser, JWT_SECRET_KEY, {}, (error, token) => {
-      if (error) {
-        console.error("Erro ao gerar token:", error);
-        return res.status(500).json({ error: "Erro ao gerar token", details: error.message });
-      }
+    // ✅ Gerar token e enviar cookie + json
+    try {
+      await JWTSign(newUserObj, res);
+    } catch (error) {
+      console.error("Erro ao assinar JWT:", error);
+      res.status(500).json({ error: "Erro ao assinar JWT", details: error.message });
+    }
 
-      res.cookie('token', token, {
-        httpOnly: true,
-        sameSite: 'lax',
-        secure: false, // 🔐 Em produção, use: secure: true
-        maxAge: 1000 * 60 * 60 * 24 * 7,
-      }).json(newUser);
-    });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Erro ao criar usuário:", error);
+    res.status(500).json({ error: "Erro ao criar usuário", details: error.message });
   }
 });
 
+// ✅ POST /login
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -76,19 +106,12 @@ router.post("/login", async (req, res) => {
         const { name, _id } = userDoc;
         const newUserObj = { name, email, _id };
 
-        jwt.sign(newUserObj, JWT_SECRET_KEY, {}, (error, token) => {
-          if (error) {
-            console.error("Erro ao gerar token:", error);
-            return res.status(500).json({ error: "Erro ao gerar token", details: error.message });
-          }
+        try {
+          await JWTSign(newUserObj, res);
+        } catch (error) {
+          res.status(500).json({ error: "Erro ao assinar com o JWT", details: error.message });
+        }
 
-          res.cookie('token', token, {
-            httpOnly: true,
-            sameSite: 'lax',
-            secure: false, // 🔐 Em produção, use: secure: true
-            maxAge: 1000 * 60 * 60 * 24 * 7,
-          }).json(newUserObj);
-        });
       } else {
         res.status(401).json({ error: "Senha inválida!" });
       }

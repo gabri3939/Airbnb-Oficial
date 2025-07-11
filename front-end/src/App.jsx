@@ -28,7 +28,7 @@ function App() {
         <Route path='/' element={<Home />} />
         <Route path='/login' element={<Login user={user} setUser={setUser} />} />
         <Route path='/register' element={<Register setUser={setUser} />} />
-        <Route path='/account/:subpage?' element={<Account />} />
+        <Route path='/account/:subpage/:action?' element={<Account user={user} setUser={setUser}/>} />
       </Routes>
     </BrowserRouter>
   );
