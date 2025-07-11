@@ -2,10 +2,9 @@ import express from "express";
 import "dotenv/config";
 import { connectDb } from "./config/db.js";
 import usersRouter from "./routes/users.js";
-import PlaceRoutes from "./places/routes.js"
+import PlaceRoutes from "./places/routes.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -15,7 +14,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(cors({
-  origin: "http://localhost:5173",  // SEM barra no final
+  origin: "http://localhost:5173",
   credentials: true,
 }));
 

@@ -3,8 +3,6 @@ import "dotenv/config";
 
 const { JWT_SECRET_KEY } = process.env;
 
-console.log("JWT_SECRET_KEY no jwt.js:", JSON.stringify(JWT_SECRET_KEY));
-
 export const JWTSign = (newUserObj, res) => {
   return new Promise((resolve, reject) => {
     jwt.sign(newUserObj, JWT_SECRET_KEY, { expiresIn: "7d" }, (error, token) => {
@@ -15,8 +13,8 @@ export const JWTSign = (newUserObj, res) => {
 
       res.cookie("token", token, {
         httpOnly: true,
-        sameSite: "none",
-        secure: false, // em produção, deve ser true com HTTPS
+        sameSite: "lax",   // <<< corrigido para ambiente local
+        secure: false,     // <<< false porque não está usando HTTPS localmente
         maxAge: 1000 * 60 * 60 * 24 * 7,
         path: "/",
       }).json(newUserObj);
@@ -27,7 +25,7 @@ export const JWTSign = (newUserObj, res) => {
 };
 
 export const JWTVerify = (req) => {
-  const { token } = req.cookies;
+  const token = req.cookies?.token;
 
   if (!token) return null;
 
