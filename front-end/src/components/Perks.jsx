@@ -1,24 +1,24 @@
 import React from 'react';
 
-const Perks = ({ setPersk }) => {
-
+const Perks = ({ perks, setPerks }) => {
   const handleClick = (target) => {
-    setPersk((prev) =>
-      target.checked
-        ? [...prev, target.value]
-        : prev.filter((v) => v !== target.value)
+    const { checked, value } = target;
+    setPerks((prev) =>
+      checked ? [...prev, value] : prev.filter((v) => v !== value)
     );
   };
 
+  const isChecked = (name) => perks.includes(name);
+
   return (
     <div className='grid [grid-template-columns:repeat(auto-fit,minmax(250px,1fr))] gap-4'>
-
-      {/* Label 1 */}
-      <label htmlFor='wifi1' className=' flex gap-2 items-center px-4 py-3 border border-gray-300 rounded-xl cursor-pointer'>
+      {/* Wifi */}
+      <label htmlFor='wifi' className='flex gap-2 items-center px-4 py-3 border border-gray-300 rounded-xl cursor-pointer'>
         <input
           type='checkbox'
-          id='wifi1'
-          value="wifi"
+          id='wifi'
+          value='wifi'
+          checked={isChecked('wifi')}
           onChange={(e) => handleClick(e.target)}
         />
         <svg xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -30,12 +30,13 @@ const Perks = ({ setPersk }) => {
         Wifi
       </label>
 
-      {/* Label 2 */}
-      <label htmlFor='parking' className=' flex gap-2 items-center px-4 py-3 border border-gray-300 rounded-xl cursor-pointer'>
+      {/* Estacionamento */}
+      <label htmlFor='parking' className='flex gap-2 items-center px-4 py-3 border border-gray-300 rounded-xl cursor-pointer'>
         <input
           type='checkbox'
           id='parking'
-          value="parking"
+          value='parking'
+          checked={isChecked('parking')}
           onChange={(e) => handleClick(e.target)}
         />
         <svg xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -47,12 +48,13 @@ const Perks = ({ setPersk }) => {
         Estacionamento gratuito
       </label>
 
-      {/* Label 3 */}
+      {/* TV */}
       <label htmlFor='TV' className='flex gap-2 items-center px-4 py-3 border border-gray-300 rounded-xl cursor-pointer'>
         <input
           type='checkbox'
           id='TV'
-          value="TV"
+          value='TV'
+          checked={isChecked('TV')}
           onChange={(e) => handleClick(e.target)}
         />
         <svg xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -64,39 +66,47 @@ const Perks = ({ setPersk }) => {
         TV
       </label>
 
-      {/* Label 4 */}
-      <label htmlFor='radio' className=' flex gap-2 items-center px-4 py-3 border border-gray-300 rounded-xl cursor-pointer'>
+      {/* Rádio */}
+      <label htmlFor='radio' className='flex gap-2 items-center px-4 py-3 border border-gray-300 rounded-xl cursor-pointer'>
         <input
           type='checkbox'
           id='radio'
-          value="radio"
+          value='radio'
+          checked={isChecked('radio')}
           onChange={(e) => handleClick(e.target)}
         />
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-  <path strokeLinecap="round" strokeLinejoin="round" d="m3.75 7.5 16.5-4.125M12 6.75c-2.708 0-5.363.224-7.948.655C2.999 7.58 2.25 8.507 2.25 9.574v9.176A2.25 2.25 0 0 0 4.5 21h15a2.25 2.25 0 0 0 2.25-2.25V9.574c0-1.067-.75-1.994-1.802-2.169A48.329 48.329 0 0 0 12 6.75Zm-1.683 6.443-.005.005-.006-.005.006-.005.005.005Zm-.005 2.127-.005-.006.005-.005.005.005-.005.005Zm-2.116-.006-.005.006-.006-.006.005-.005.006.005Zm-.005-2.116-.006-.005.006-.005.005.005-.005.005ZM9.255 10.5v.008h-.008V10.5h.008Zm3.249 1.88-.007.004-.003-.007.006-.003.004.006Zm-1.38 5.126-.003-.006.006-.004.004.007-.006.003Zm.007-6.501-.003.006-.007-.003.004-.007.006.004Zm1.37 5.129-.007-.004.004-.006.006.003-.004.007Zm.504-1.877h-.008v-.007h.008v.007ZM9.255 18v.008h-.008V18h.008Zm-3.246-1.87-.007.004L6 16.127l.006-.003.004.006Zm1.366-5.119-.004-.006.006-.004.004.007-.006.003ZM7.38 17.5l-.003.006-.007-.003.004-.007.006.004Zm-1.376-5.116L6 12.38l.003-.007.007.004-.004.007Zm-.5 1.873h-.008v-.007h.008v.007ZM17.25 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Zm0 4.5a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
-</svg>
-
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+          strokeWidth={1.5} stroke="currentColor" className="size-6">
+          <path strokeLinecap="round" strokeLinejoin="round"
+            d="m3.75 7.5 16.5-4.125M12 6.75c-2.708 0-5.363.224-7.948.655C2.999 7.58 2.25 8.507 2.25 9.574v9.176A2.25 2.25 0 0 0 4.5 21h15a2.25 2.25 0 0 0 2.25-2.25V9.574c0-1.067-.75-1.994-1.802-2.169A48.329 48.329 0 0 0 12 6.75Z" />
+        </svg>
         Rádio
       </label>
 
-      {/* Label 5 */}
-      <label htmlFor='pets' className=' flex gap-2 items-center px-4 py-3 border border-gray-300 rounded-xl cursor-pointer'>
+      {/* Pets */}
+      <label htmlFor='pets' className='flex gap-2 items-center px-4 py-3 border border-gray-300 rounded-xl cursor-pointer'>
         <input
           type='checkbox'
           id='pets'
-          value="pets"
+          value='pets'
+          checked={isChecked('pets')}
           onChange={(e) => handleClick(e.target)}
         />
-      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAABW0lEQVR4nO2Uz0rDQBDG8wR6U/Cq7yCIUo+B/b5touZgfZse7Fn7DupLSKvQCuIziO1F8U/rQT3ooTKQhSGYuptcOzAQZne+38xOmChaWB0zxuySfCQ5jON4ycWzLFsGcAPgCUCjMoDkHcmZOIBTFwfQdXGSt5UBAL6U0EjFxyr+UQcwVkKf/4GrALp/PYV+OpIn3oLGmCMA7wCu0jRdkcECGMigjTE7CtyQmJzJHZKrJK/z3FYpQNpVQz3zLYzkheroYd7FNwV4LXR3kBcwArBfyJuU5XlVAmCb5I8S+W42m1slnZ+XAuTdSfYBTEkeKoGhAjuhgSqglef0RSMKMQAsiju31pqojpHckHVQBpA/KUmS9UriMkiSL3PEnT+T3AutvOMhPCvM5Dik+mkogOQkpINehQ4uvQHW2jVZFwGAnuR4AxRoE0A73zP3slHF82+JteVOsPDCImW/7UxXDbL82YEAAAAASUVORK5CYII=" alt="cat-footprint"></img>
+        <img
+          src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAABW0lEQVR4nO2Uz0rDQBDG8wR6U/Cq7yCIUo+B/b5touZgfZse7Fn7DupLSKvQCuIziO1F8U/rQT3ooTKQhSGYuptcOzAQZne+38xOmChaWB0zxuySfCQ5jON4ycWzLFsGcAPgCUCjMoDkHcmZOIBTFwfQdXGSt5UBAL6U0EjFxyr+UQcwVkKf/4GrALp/PYV+OpIn3oLGmCMA7wCu0jRdkcECGMigjTE7CtyQmJzJHZKrJK/z3FYpQNpVQz3zLYzkheroYd7FNwV4LXR3kBcwArBfyJuU5XlVAmCb5I8S+W42m1slnZ+XAuTdSfYBTEkeKoGhAjuhgSqglef0RSMKMQAsiju31pqojpHckHVQBpA/KUmS9UriMkiSL3PEnT+T3AutvOMhPCvM5Dik+mkogOQkpINehQ4uvQHW2jVZFwGAnuR4AxRoE0A73zP3slHF82+JteVOsPDCImW/7UxXDbL82YEAAAAASUVORK5CYII="
+          alt="pets"
+          className="w-6 h-6"
+        />
         Pets
       </label>
 
-      {/* Label 6 */}
-      <label htmlFor='entrance' className=' flex gap-2 items-center px-4 py-3 border border-gray-300 rounded-xl cursor-pointer'>
+      {/* Entrada privada */}
+      <label htmlFor='entrance' className='flex gap-2 items-center px-4 py-3 border border-gray-300 rounded-xl cursor-pointer'>
         <input
           type='checkbox'
           id='entrance'
-          value="entrance"
+          value='entrance'
+          checked={isChecked('entrance')}
           onChange={(e) => handleClick(e.target)}
         />
         <svg xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -107,7 +117,6 @@ const Perks = ({ setPersk }) => {
         </svg>
         Entrada privada
       </label>
-
     </div>
   );
 };

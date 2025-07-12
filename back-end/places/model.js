@@ -1,6 +1,6 @@
 import {model, Schema} from "mongoose"
 const placeSchema = new Schema ({
-    owner: {type: Schema.Types.ObjectId, ref: "User"},
+owner: {type: Schema.Types.ObjectId, ref: "User"},
 Title: String,
 City: String,
 Photos: [String],
