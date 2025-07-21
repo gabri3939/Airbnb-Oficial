@@ -52,8 +52,10 @@ router.post("/upload/link", async (req, res) => {
     const filename = await downloaderImage(link, `${__dirname}/tmp/`);
     res.json({ filename });
   } catch (err) {
-    res.status(500).json({ error: "Erro ao baixar imagem" });
+    console.error("Erro ao baixar imagem:", err);
+    res.status(500).json({ error: err.message || "Erro ao baixar imagem" });
   }
 });
+
 
 export default router;
